@@ -21,6 +21,42 @@ body {
   background-color: #2b3037;
 }
 
+.page {
+  position: relative;
+  height: 100vh;
+}
+
+.add {
+  position: absolute;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 64px;
+  height: 64px;
+}
+
+#a {
+  position: absolute;
+  left: 100px;
+  top: 100px;
+  transform: rotate(-4deg);
+}
+
+#b {
+  position: absolute;
+  left: 500px;
+  top: 200px;
+  transform: rotate(2deg);
+}
+
+#c {
+  position: absolute;
+  left: 1000px;
+  top: 130px;
+  transform: rotate(7deg);
+}
+
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
