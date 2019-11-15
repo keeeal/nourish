@@ -17,6 +17,10 @@ html {
   line-height: 1.4;
 }
 
+body {
+  background-color: #2b3037;
+}
+
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
@@ -263,4 +267,3 @@ textarea {
     page-break-after: avoid;
   }
 }
-
