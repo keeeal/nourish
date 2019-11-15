@@ -1,2 +1,2 @@
 # nourish
-Good food erryday.
+Good food erryday (every day).
