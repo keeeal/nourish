@@ -1,30 +1,92 @@
-max_energy = 10;
 
-function Card(name, energy, protein, carbs) {
-  this.name = name;
-  this.energy = energy;
-  this.protein = protein;
-  this.carbs = carbs;
+function Card(props) {
+  let styles = {
+    left: props.x + "px",
+    top: props.y + "px",
+    transform: "rotate(" + props.a + "deg)",
+  }
+  return (
+    <div
+      className={"card" + (props.selected ? " selected " : " ") + "mdl-card mdl-shadow--2dp"}
+      style={styles}
+      onClick={props.onClick}>
+
+      <div className="mdl-card__title">
+        <h2 className="mdl-card__title-text">{props.name}</h2>
+      </div>
+      <div className="mdl-card__supporting-text">
+        Energy: {props.energy}
+      </div>
+      <div className="mdl-card__menu">
+        <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+          <i className="material-icons">edit</i>
+        </button>
+      </div>
+    </div>
+  );
 }
 
-var cards = [
-  new Card("A", 4, 5, 3),
-  new Card("B", 5, 5, 9),
-  new Card("C", 7, 5, 3),
-];
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cards: [
+        {
+          name: "A",
+          energy: 4,
+          x: 100,
+          y: 100,
+          a: -4,
+        },
+        {
+          name: "B",
+          energy: 5,
+          x: 500,
+          y: 200,
+          a: 2,
+        },
+        {
+          name: "C",
+          energy: 7,
+          x: 1000,
+          y: 130,
+          a: 7,
+        },
+      ],
+      selected: [],
+    };
+    this.state.selected = Array(this.state.cards.length).fill(false)
+  }
 
-var selected = []
+  handleClick(i) {
+    const selected = this.state.selected.slice();
+    selected[i] = ! selected[i]
+    this.setState({selected: selected});
+  }
 
-function update_ui() {
+  renderCard(i) {
+    return <Card
+      key={i}
+      selected={this.state.selected[i]}
+      name={this.state.cards[i].name}
+      energy={this.state.cards[i].energy}
+      x={this.state.cards[i].x}
+      y={this.state.cards[i].y}
+      a={this.state.cards[i].a}
+      onClick={() => this.handleClick(i)}
+    />;
+  }
 
+  render() {
+    return (
+      this.state.cards.map((value, index) => {
+        return this.renderCard(index)
+      })
+    );
+  }
 }
 
-for (i = 0; i < cards.length; i++) {
-  $( "main" ).append(
-    "<div id='" + cards[i].name + "' class='card mdl-card mdl-shadow--2dp'><div class='mdl-card__title'><h2 class='mdl-card__title-text'>" + cards[i].name + "</h2></div><div class='mdl-card__supporting-text'>Energy: " + cards[i].energy + "</div><div class='mdl-card__supporting-text'>Protein: " + cards[i].protein + "</div><div class='mdl-card__supporting-text'>Carbs: " + cards[i].carbs + "</div><div class='mdl-card__menu'><button class='mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect'><i class='material-icons'>edit</i></button></div></div>"
-  )
-}
-
-$( ".card" ).on( "click", function( event ) {
-  id = $( event.target ).parent( ".card" ).attr('id');
-});
+ReactDOM.render(
+  <Board />,
+  document.getElementById('board')
+);

@@ -36,25 +36,8 @@ body {
   height: 64px;
 }
 
-#A {
+.card {
   position: absolute;
-  left: 100px;
-  top: 100px;
-  transform: rotate(-4deg);
-}
-
-#B {
-  position: absolute;
-  left: 500px;
-  top: 200px;
-  transform: rotate(2deg);
-}
-
-#C {
-  position: absolute;
-  left: 1000px;
-  top: 130px;
-  transform: rotate(7deg);
 }
 
 .copywrite {
