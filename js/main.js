@@ -1,15 +1,20 @@
 
-function Card(props) {
-  let styles = {
-    left: props.x,
-    top: props.y,
-    transform: "rotate(" + props.a + "deg)",
+function sum( objs, mask, attr ) {
+  var sum = 0;
+  for (var i = 0; i < Math.min(objs.length, mask.length); i++) {
+    if (mask[i] && objs[i].hasOwnProperty( attr )) {
+      sum += objs[i][attr]
+    }
   }
+  return sum
+}
+
+function Card(props) {
   return (
     <div
-      id={props.index}
-      className={"card" + (props.selected ? " selected " : " ") + "mdl-card mdl-shadow--2dp"}
-      style={styles}
+      className={"card mdl-card mdl-shadow--2dp" +
+        (props.selected ? " selected" : "") +
+        (props.disabled ? " disabled" : "")}
       onClick={props.onClick}>
 
       <div className="mdl-card__title">
@@ -28,52 +33,64 @@ class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      limits: {
+        energy: 10,
+      },
+      goals: {
+        energy: 6,
+      },
       cards: [
         {
-          name: "A",
+          name: "Anchovies",
           energy: 4,
-          x: 100,
-          y: 100,
-          a: -4,
         },
         {
-          name: "B",
+          name: "Brocolli",
           energy: 5,
-          x: 500,
-          y: 200,
-          a: 2,
         },
         {
-          name: "C",
+          name: "Cake",
           energy: 7,
-          x: 1000,
-          y: 130,
-          a: 7,
         },
       ],
       selected: [],
-
+      disabled: [],
     };
+
     this.state.selected = Array(this.state.cards.length).fill(false)
+    this.state.disabled = Array(this.state.cards.length).fill(false)
   }
 
   handleClick(i) {
-    console.log(this.state.cards[i].x);
     const selected = this.state.selected.slice();
+    const disabled = Array(this.state.cards.length).fill(false)
     selected[i] = ! selected[i]
-    this.setState({selected: selected});
+
+    for (var attr in this.state.limits) {
+      if (this.state.limits.hasOwnProperty(attr)) {
+        var attr_selected = sum(this.state.cards, selected, attr)
+        var attr_limit = this.state.limits[attr]
+
+        for (var i = 0; i < disabled.length; i++) {
+          if (! selected[i]) {
+            if (this.state.cards[i][attr] + attr_selected > attr_limit) {
+              disabled[i] = true;
+            }
+          }
+        }
+      }
+    }
+
+    this.setState({selected: selected, disabled: disabled});
   }
 
   renderCard(i) {
     return <Card
       key={i}
-      index={i}
       selected={this.state.selected[i]}
+      disabled={this.state.disabled[i]}
       name={this.state.cards[i].name}
       energy={this.state.cards[i].energy}
-      x={this.state.cards[i].x}
-      y={this.state.cards[i].y}
-      a={this.state.cards[i].a}
       onClick={() => this.handleClick(i)}
     />;
   }
@@ -95,4 +112,10 @@ ReactDOM.render(
 $( ".card" ).draggable({
   containment: "#board",
   scroll: false,
+});
+
+$( ".card" ).each(function( index ) {
+  $( this ).css({
+    transform: "rotate(" + (30*Math.random() - 15) + "deg)",
+  });
 });
