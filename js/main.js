@@ -1,21 +1,19 @@
 
 function Card(props) {
   let styles = {
-    left: props.x + "px",
-    top: props.y + "px",
+    left: props.x,
+    top: props.y,
     transform: "rotate(" + props.a + "deg)",
   }
   return (
     <div
+      id={props.index}
       className={"card" + (props.selected ? " selected " : " ") + "mdl-card mdl-shadow--2dp"}
       style={styles}
       onClick={props.onClick}>
 
       <div className="mdl-card__title">
         <h2 className="mdl-card__title-text">{props.name}</h2>
-      </div>
-      <div className="mdl-card__supporting-text">
-        Energy: {props.energy}
       </div>
       <div className="mdl-card__menu">
         <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -54,11 +52,13 @@ class Board extends React.Component {
         },
       ],
       selected: [],
+
     };
     this.state.selected = Array(this.state.cards.length).fill(false)
   }
 
   handleClick(i) {
+    console.log(this.state.cards[i].x);
     const selected = this.state.selected.slice();
     selected[i] = ! selected[i]
     this.setState({selected: selected});
@@ -67,6 +67,7 @@ class Board extends React.Component {
   renderCard(i) {
     return <Card
       key={i}
+      index={i}
       selected={this.state.selected[i]}
       name={this.state.cards[i].name}
       energy={this.state.cards[i].energy}
@@ -90,3 +91,8 @@ ReactDOM.render(
   <Board />,
   document.getElementById('board')
 );
+
+$( ".card" ).draggable({
+  containment: "#board",
+  scroll: false,
+});
