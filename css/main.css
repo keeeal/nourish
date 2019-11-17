@@ -27,14 +27,18 @@ body {
   padding: 3rem;
 }
 
-.add {
+#add-button {
   position: absolute;
-  bottom: 32px;
+  bottom: 3rem;
   left: 0;
   right: 0;
   margin: auto;
-  width: 64px;
-  height: 64px;
+  z-index: 999;
+}
+
+#add-form {
+  background-color: white;
+  margin: 2.4rem;
 }
 
 .card {
@@ -42,6 +46,16 @@ body {
   border-radius: 8px;
   touch-action: none;
   user-select: none;
+  width: auto;
+}
+
+.form-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  bottom: 8rem;
+  border-radius: 8px;
 }
 
 .disabled {
@@ -61,7 +75,6 @@ body {
 }
 
 .mdl-card {
-  width: auto;
   min-height: 0;
 }
 
