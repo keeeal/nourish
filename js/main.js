@@ -29,6 +29,14 @@ function Card(props) {
   );
 }
 
+function Add(props) {
+  return (
+    <button className="add mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+      <i className="material-icons">add</i>
+    </button>
+  );
+}
+
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +70,8 @@ class Board extends React.Component {
   }
 
   handleClick(i) {
+    if (this.state.disabled[i]) return
+
     const selected = this.state.selected.slice();
     const disabled = Array(this.state.cards.length).fill(false)
     selected[i] = ! selected[i]
@@ -95,11 +105,20 @@ class Board extends React.Component {
     />;
   }
 
+  renderButton() {
+    return <Add onClick={() => this.handleClick()}/>;
+  }
+
   render() {
+    var rendered_cards = [];
+    for (var i = 0; i < this.state.cards.length; i++) {
+        rendered_cards.push(this.renderCard(i));
+    }
     return (
-      this.state.cards.map((value, index) => {
-        return this.renderCard(index)
-      })
+      <div>
+      {rendered_cards}
+      {this.renderButton()}
+      </div>
     );
   }
 }

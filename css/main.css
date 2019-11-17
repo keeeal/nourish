@@ -55,6 +55,11 @@ body {
   background-color: rgb(250,246,233);
 }
 
+.mdl-layout-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+}
+
 .mdl-card {
   width: auto;
   min-height: 0;
@@ -62,6 +67,12 @@ body {
 
 .mdl-card__title {
   padding: 3rem;
+}
+
+.mdl-card__title-text {
+  font-family: 'Caveat', cursive;
+  font-size: 2.4rem;
+  overflow: inherit;
 }
 
 .mdl-card__menu {
