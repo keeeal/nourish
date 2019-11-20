@@ -108,7 +108,11 @@ class Board extends React.Component {
       new_card: {
         name: null,
         energy: null,
+        protein: null,
         carbs: null,
+        sugar: null,
+        fats: null,
+        fibre: null,
       },
       limits: {
         energy: 10,
@@ -124,6 +128,20 @@ class Board extends React.Component {
     let n_cards = this.state.cards.length
     this.state.selected = Array(n_cards).fill(false)
     this.state.disabled = Array(n_cards).fill(false)
+  }
+
+  importCards() {
+
+  }
+
+  // download all cards as a json file
+  exportCards() {
+    let cardsStr = JSON.stringify(this.state.cards);
+    let cardsUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(cardsStr);
+    let linkElement = document.createElement('a');
+    linkElement.setAttribute('href', cardsUri);
+    linkElement.setAttribute('download', 'nourish_cards.json');
+    linkElement.click();
   }
 
   // update disabled cards
