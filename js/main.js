@@ -11,7 +11,7 @@ function sum(objs, mask, attr) {
 }
 
 // Card class
-// props: key, card, selected, disabled, onClick
+// props: key, card, selected, disabled, onClick, onDelete
 class Card extends React.Component {
   constructor(props) {
     super(props)
@@ -21,18 +21,21 @@ class Card extends React.Component {
   render() {
     return (
       <div
-        ref={this.reference}
         className={"card mdl-card mdl-shadow--2dp" +
           (this.props.selected ? " selected" : "") +
           (this.props.disabled ? " disabled" : "")}
-        onClick={this.props.onClick}>
+        onClick={this.props.onClick}
+        ref={this.reference}>
 
-        <div className="mdl-card__title">
-          <h2 className="mdl-card__title-text">{this.props.card.name}</h2>
+        <div className="card-title mdl-card__title">
+          <h2 className="card-title-text mdl-card__title-text">{this.props.card.name}</h2>
         </div>
-        <div className="mdl-card__menu hidden">
-          <button className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-            <i className="material-icons">edit</i>
+        <div className="card-menu mdl-card__menu">
+          <button
+            className="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect"
+            onClick={this.props.onDelete}>
+
+            <i className="material-icons">clear</i>
           </button>
         </div>
       </div>
@@ -55,7 +58,7 @@ class Card extends React.Component {
 }
 
 // AddButton class
-// props: onClick
+// props: tooltip, onClick
 function AddButton(props) {
   return (
     <div>
@@ -66,7 +69,10 @@ function AddButton(props) {
 
         <i className="material-icons">add</i>
       </button>
-      <div className="mdl-tooltip mdl-tooltip--top" htmlFor="add-button">
+      <div
+        className={"mdl-tooltip mdl-tooltip--top" +
+          (props.tooltip ? "" : " hidden")}
+        htmlFor="add-button">
         New card
       </div>
     </div>
@@ -124,10 +130,6 @@ class Board extends React.Component {
       disabled: [],
       show_form: false,
     }
-
-    let n_cards = this.state.cards.length
-    this.state.selected = Array(n_cards).fill(false)
-    this.state.disabled = Array(n_cards).fill(false)
   }
 
   importCards() {
@@ -136,77 +138,89 @@ class Board extends React.Component {
 
   // download all cards as a json file
   exportCards() {
-    let cardsStr = JSON.stringify(this.state.cards);
-    let cardsUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(cardsStr);
-    let linkElement = document.createElement('a');
-    linkElement.setAttribute('href', cardsUri);
-    linkElement.setAttribute('download', 'nourish_cards.json');
-    linkElement.click();
+    let cardsStr = JSON.stringify(this.state.cards)
+    let cardsUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(cardsStr)
+    let linkElement = document.createElement('a')
+    linkElement.setAttribute('href', cardsUri)
+    linkElement.setAttribute('download', 'nourish_cards.json')
+    linkElement.click()
   }
 
   // update disabled cards
   updateDisabled(cards, selected) {
-    const disabled = Array(cards.length).fill(false);
+    const disabled = Array(cards.length).fill(false)
 
     for (var attr in this.state.limits) {
       if (this.state.limits.hasOwnProperty(attr)) {
-        var attr_selected = sum(cards, selected, attr);
-        var attr_limit = this.state.limits[attr];
+        var attr_selected = sum(cards, selected, attr)
+        var attr_limit = this.state.limits[attr]
 
         for (var i = 0; i < disabled.length; i++) {
           if (! selected[i]) {
             if (cards[i][attr] + attr_selected > attr_limit) {
-              disabled[i] = true;
+              disabled[i] = true
             }
           }
         }
       }
     }
 
-    this.setState({disabled: disabled});
+    this.setState({disabled: disabled})
   }
 
   // called when card with position 'index' in state is clicked
-  cardClicked(index) {
+  cardClicked(event, index) {
     // don't select if disabled
-    if (this.state.disabled[index]) return;
+    if (this.state.disabled[index]) return
 
     // toggle card selected
-    const selected = this.state.selected.slice();
-    selected[index] = ! selected[index];
+    const selected = this.state.selected.slice()
+    selected[index] = ! selected[index]
 
-    this.updateDisabled(this.state.cards, selected);
+    this.updateDisabled(this.state.cards, selected)
     this.setState({selected: selected})
   }
 
-  // called when the add button is clicked
-  addButtonClicked() {
+  cardDeleted(event, index) {
+    event.stopPropagation()
+
+    const cards = this.state.cards.slice()
+    const selected = this.state.selected.slice()
+    cards.splice(index, 1)
+    selected.splice(index, 1)
+
     this.setState({
-      show_form: ! this.state.show_form,
-    });
+      cards: cards,
+      selected: selected,
+    })
+  }
+
+  // called when the add button is clicked
+  addButtonClicked(event) {
+    this.setState({show_form: ! this.state.show_form})
   }
 
   // called when text in the add form is changed
   addFormChanged(event) {
-    const new_card = Object.assign({}, this.state.new_card);
+    const new_card = Object.assign({}, this.state.new_card)
 
     // for empty strings store null
     if (event.target.value.length) {
       if (event.target.id == "name") {
-        new_card[event.target.id] = event.target.value;
+        new_card[event.target.id] = event.target.value
       } else {
-        new_card[event.target.id] = parseFloat(event.target.value);
+        new_card[event.target.id] = parseFloat(event.target.value)
       }
     } else {
-      new_card[event.target.id] = null;
+      new_card[event.target.id] = null
     }
 
-    this.setState({new_card: new_card});
+    this.setState({new_card: new_card})
   }
 
   // called when the add form is submitted
   addFormSubmitted(event) {
-    event.preventDefault();
+    event.preventDefault()
 
     // don't add a card if values are missing
     for (const value of Object.values(this.state.new_card)) {
@@ -214,11 +228,14 @@ class Board extends React.Component {
     }
 
     // add new card to cards
-    const cards = this.state.cards.slice();
+    const cards = this.state.cards.slice()
     cards.push(this.state.new_card)
-    this.updateDisabled(cards, this.state.selected);
-    this.setState({cards: cards});
-    $(event.target).trigger("reset");
+    this.updateDisabled(cards, this.state.selected)
+    this.setState({
+      cards: cards,
+      show_form: ! this.state.show_form,
+    })
+    $(event.target).trigger("reset")
   }
 
   // render the i'th card
@@ -228,14 +245,16 @@ class Board extends React.Component {
       card={this.state.cards[index]}
       selected={this.state.selected[index]}
       disabled={this.state.disabled[index]}
-      onClick={() => this.cardClicked(index)}
+      onClick={e => this.cardClicked(e, index)}
+      onDelete={e => this.cardDeleted(e, index)}
     />
   }
 
   // render the add button
   renderAddButton() {
     return <AddButton
-      onClick={() => this.addButtonClicked()}
+      tooltip={! this.state.show_form}
+      onClick={e => this.addButtonClicked(e)}
     />
   }
 

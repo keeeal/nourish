@@ -16,6 +16,7 @@
 
   <!-- MDL -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-deep_orange.min.css" />
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
@@ -26,9 +27,6 @@
 
   <!-- JSX -->
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-  <!-- Draggable -->
-  <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.6/lib/draggable.js"></script>
 
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
@@ -43,29 +41,33 @@
 
     <div class="mdl-layout mdl-js-layout">
 
-      <header class="mdl-layout__header mdl-layout__header--transparent">
-        <div class="mdl-layout__header-row">
+      <header class="header mdl-layout__header mdl-layout__header--transparent">
+        <div class="header-row mdl-layout__header-row">
           <div class="mdl-layout-spacer"></div>
-          <span class="mdl-layout-title">Nourish</span>
+          <span class="header-title mdl-layout-title">Nourish</span>
           <div class="mdl-layout-spacer"></div>
         </div>
+        <div class="header-row mdl-layout__header-row">
+          <div class="nav-spacer mdl-layout-spacer mdl-layout--large-screen-only"></div>
+          <div class="mdl-layout-spacer mdl-layout--small-screen-only"></div>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">
+              <i class="material-icons-round">menu</i>
+            </a>
+            <a class="mdl-navigation__link" href="">
+              <i class="material-icons-round">cloud_upload</i>
+            </a>
+            <a class="mdl-navigation__link" href="">
+              <i class="material-icons-round">save</i>
+            </a>
+          </nav>
+          <div class="mdl-layout-spacer mdl-layout--small-screen-only"></div>
+        </div>
       </header>
-
-      <div class="mdl-layout__drawer">
-        <nav class="mdl-navigation">
-
-          <a class="mdl-navigation__link" href=""><i class="material-icons">save_alt</i> Save cards</a>
-          <a class="mdl-navigation__link" href=""><i class="material-icons">cloud_upload</i> Import cards</a>
-
-          <!-- James Keal &amp; Sam Culley <script>new Date().getFullYear()>2010&&document.write(new Date().getFullYear());</script> -->
-        </nav>
-      </div>
 
       <main class="mdl-layout__content">
 
         <div id="board"></div>
-
-
 
       </main>
 

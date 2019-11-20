@@ -33,7 +33,7 @@ body {
   left: 0;
   right: 0;
   margin: auto;
-  z-index: 999;
+  z-index: 99999999;
 }
 
 #add-form {
@@ -56,6 +56,7 @@ body {
   margin: auto;
   bottom: 8rem;
   border-radius: 8px;
+  z-index: 99999999;
 }
 
 .disabled {
@@ -69,36 +70,47 @@ body {
   background-color: rgb(250,246,233);
 }
 
-.mdl-layout-title {
+.header {
+  display: flex !important;
+}
+
+.header-title {
   font-family: 'Playfair Display', serif;
   font-size: 2.4rem;
+}
+
+.header-row {
+  position: relative;
+  top: 32px;
+  height: 8px;
+  padding: 0;
+}
+
+.nav-spacer {
+  max-width: 16px;
 }
 
 .mdl-card {
   min-height: 0;
 }
 
-.mdl-card__title {
+.card-title {
   padding: 3rem;
 }
 
-.mdl-card__title-text {
+.card-title-text {
   font-family: 'Caveat', cursive;
   font-size: 2.4rem;
   overflow: inherit;
 }
 
-.mdl-card__menu {
+.card-menu {
+  display: none;
   color: #999;
 }
 
-.mdl-menu__item {
-  opacity: 1;
-  padding: 0 32px;
-}
-
-.mdl-radio__label {
-  font-size: 14px;
+.card:hover .card-menu {
+  display: block;
 }
 
 /*
