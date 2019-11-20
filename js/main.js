@@ -10,6 +10,25 @@ function sum(objs, mask, attr) {
   return sum
 }
 
+// NavBar class
+// props: can_export, onImport, onExport
+function NavBar(props) {
+  return ReactDOM.createPortal(
+    <nav className="mdl-navigation">
+      <a className="mdl-navigation__link" href="">
+        <i className="material-icons-round">menu</i>
+      </a>
+      <a className="mdl-navigation__link" href="" onClick={props.onImport}>
+        <i className="material-icons-round">cloud_upload</i>
+      </a>
+      <a className={"mdl-navigation__link" + (props.can_export ? "" : " disabled")} href="" onClick={props.onExport}>
+        <i className="material-icons-round">save</i>
+      </a>
+    </nav>,
+    document.getElementById('nav-row')
+  );
+}
+
 // Card class
 // props: key, card, selected, disabled, onClick, onDelete
 class Card extends React.Component {
@@ -132,12 +151,20 @@ class Board extends React.Component {
     }
   }
 
-  importCards() {
-
+  // import cards from a json file
+  importCards(event) {
+    event.preventDefault()
+    console.log("import")
   }
 
   // download all cards as a json file
-  exportCards() {
+  exportCards(event) {
+    event.preventDefault()
+
+    // don't download if there are no cards
+    if (this.state.cards.length == 0) return
+
+    // download
     let cardsStr = JSON.stringify(this.state.cards)
     let cardsUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(cardsStr)
     let linkElement = document.createElement('a')
@@ -168,7 +195,7 @@ class Board extends React.Component {
     this.setState({disabled: disabled})
   }
 
-  // called when card with position 'index' in state is clicked
+  // click the card with position 'index' in state.cards
   cardClicked(event, index) {
     // don't select if disabled
     if (this.state.disabled[index]) return
@@ -181,6 +208,7 @@ class Board extends React.Component {
     this.setState({selected: selected})
   }
 
+  // delete the card with position 'index' in state.cards
   cardDeleted(event, index) {
     event.stopPropagation()
 
@@ -238,7 +266,16 @@ class Board extends React.Component {
     $(event.target).trigger("reset")
   }
 
-  // render the i'th card
+  // render nav bar
+  renderNavBar() {
+    return <NavBar
+      can_export={this.state.cards.length > 0}
+      onExport={e => this.exportCards(e)}
+      onImport={e => this.importCards(e)}
+    />
+  }
+
+  // render the card with position 'index' in state.cards
   renderCard(index) {
     return <Card
       key={index}
@@ -275,8 +312,9 @@ class Board extends React.Component {
         rendered_cards.push(this.renderCard(i))
     }
     return (
-      <div>
+      <div id="board">
         {rendered_cards}
+        {this.renderNavBar()}
         {this.renderAddButton()}
         {this.renderAddForm()}
       </div>
@@ -287,5 +325,5 @@ class Board extends React.Component {
 // main
 ReactDOM.render(
   <Board />,
-  document.getElementById("board")
+  document.getElementsByTagName("main")[0]
 )
