@@ -1,15 +1,4 @@
 
-// sum an attribute over a masked list of objects
-function sum(objs, mask, attr) {
-  var sum = 0
-  for (var i = 0; i < Math.min(objs.length, mask.length); i++) {
-    if (mask[i] && objs[i].hasOwnProperty(attr)) {
-      sum += objs[i][attr]
-    }
-  }
-  return sum
-}
-
 // Board class
 // props: none
 class Board extends React.Component {
@@ -30,7 +19,7 @@ class Board extends React.Component {
         carbs: 10,
       },
       goals: {
-
+        fibre: 10,
       },
 
       cards: [],
@@ -48,7 +37,12 @@ class Board extends React.Component {
     event.preventDefault()
     console.log('complete my day:')
     for (var i = 0; i < this.state.cards.length; i++) {
-      console.log(this.state.cards[i].name)
+      for (var attr in this.state.cards[i]) {
+        if (this.state.cards[i].hasOwnProperty(attr)) {
+          console.log(attr)
+          console.log(this.state.cards[i][attr])
+        }
+      }
     }
   }
 
@@ -80,18 +74,34 @@ class Board extends React.Component {
     linkElement.click()
   }
 
+  updateTotals(cards, selected) {
+    this.state.totals = {}
+    for (var attr in this.state.limits) this.state.totals[attr] = 0
+    for (var attr in this.state.goals) this.state.totals[attr] = 0
+
+    for (var attr in this.state.totals) {
+      if (this.state.totals.hasOwnProperty(attr)) {
+        for (var i = 0; i < Math.min(cards.length, selected.length); i++) {
+          if (selected[i] && cards[i].hasOwnProperty(attr)) {
+            this.state.totals[attr] += cards[i][attr]
+          }
+        }
+      }
+    }
+  }
+
   // update disabled cards
   updateDisabled(cards, selected) {
     const disabled = Array(cards.length).fill(false)
 
     for (var attr in this.state.limits) {
       if (this.state.limits.hasOwnProperty(attr)) {
-        var attr_selected = sum(cards, selected, attr)
+        var attr_total = this.state.totals[attr]
         var attr_limit = this.state.limits[attr]
 
         for (var i = 0; i < disabled.length; i++) {
           if (! selected[i]) {
-            if (cards[i][attr] + attr_selected > attr_limit) {
+            if (attr_limit < cards[i][attr] + attr_total) {
               disabled[i] = true
             }
           }
@@ -111,6 +121,7 @@ class Board extends React.Component {
     const selected = this.state.selected.slice()
     selected[index] = ! selected[index]
 
+    this.updateTotals(this.state.cards, selected)
     this.updateDisabled(this.state.cards, selected)
     this.setState({selected: selected})
   }
@@ -165,6 +176,7 @@ class Board extends React.Component {
     // add new card to cards
     const cards = this.state.cards.slice()
     cards.push(this.state.new_card)
+    this.updateTotals(cards, this.state.selected)
     this.updateDisabled(cards, this.state.selected)
     this.setState({
       cards: cards,
@@ -197,9 +209,10 @@ class Board extends React.Component {
 
         <NavBar
           can_export={this.state.cards.length > 0}
-          onMenu={e => this.completeMyDay(e)}
+          onMenu={e => this.toggleMenu(e)}
           onExport={e => this.exportCards(e)}
           onImport={e => this.importCards(e)}
+          onComplete={e => this.completeMyDay(e)}
         />
 
         <NavMenu
