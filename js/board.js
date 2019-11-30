@@ -42,12 +42,12 @@ class Board extends React.Component {
     // all i want to do is subset cards to find remaining cards
     var remainingCards =[]
     for(var i=0; i < this.state.cards.length; i++){
-      if(!this.state.selected[i] && !this.state.disabled[i]{
+      if(!this.state.selected[i] && !this.state.disabled[i]){
         remainingCards.push(cards[i])
       }
     }
     // now, we need to estimate efficiencies for each goals
-    
+
 
   }
 
@@ -222,6 +222,9 @@ class Board extends React.Component {
 
         <NavMenu
           show={this.state.show_menu}
+          limits={this.state.limits}
+          goals={this.state.goals}
+          totals={this.state.totals}
         />
 
         {rendered_cards}
