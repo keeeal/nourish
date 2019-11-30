@@ -41,15 +41,38 @@ class Board extends React.Component {
     //}
     // all i want to do is subset cards to find remaining cards
     var remainingCards =[]
-    for(var i=0; i < this.state.cards.length; i++){
-      if(!this.state.selected[i] && !this.state.disabled[i]{
+    for (var i=0; i < this.state.cards.length; i++){
+      if(!this.state.selected[i] && !this.state.disabled[i]){
         remainingCards.push(cards[i])
       }
     }
     // now, we need to estimate efficiencies for each goals
-    
+    for (var goal in this.state.goals) {
+      var eff =[]
+      for (var j = 0; j < remainingCards.length; j++) {
+        var relWeight = 0
+        for (var limit in this.state.limits) {
+          relWeight += remainingCards[limit]/totals[limit]
+        }
+        // push [value, name] to eff.
+        eff.push([remainingCards[goal]/relWeight,remainingCards[name])
+      }
+      // sort eff by value, keeping track of card name
+      eff.sort(sortFunction);
 
+      // now, need to select from eff and return
+      log.console(eff[0])
+    }
   }
+  function sortFunction(a, b) {
+      if (a[0] === b[0]) {
+          return 0;
+      }
+      else {
+          return (b[0] < a[0]) ? -1 : 1;
+      }
+  }
+
 
   // open the nav menu
   toggleMenu(event) {
