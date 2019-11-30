@@ -1,5 +1,5 @@
 
-// sum an attribute of a masked list objects
+// sum an attribute over a masked list of objects
 function sum(objs, mask, attr) {
   var sum = 0
   for (var i = 0; i < Math.min(objs.length, mask.length); i++) {
@@ -29,12 +29,33 @@ class Board extends React.Component {
         energy: 10,
         carbs: 10,
       },
-      goals: {},
+      goals: {
+
+      },
+
       cards: [],
       selected: [],
       disabled: [],
+      totals: {},
+
+      show_menu: false,
       show_form: false,
     }
+  }
+
+  // complete my day
+  completeMyDay(event) {
+    event.preventDefault()
+    console.log('complete my day:')
+    for (var i = 0; i < this.state.cards.length; i++) {
+      console.log(this.state.cards[i].name)
+    }
+  }
+
+  // open the nav menu
+  toggleMenu(event) {
+    event.preventDefault()
+    this.setState({show_menu: ! this.state.show_menu})
   }
 
   // import cards from a json file
@@ -82,7 +103,7 @@ class Board extends React.Component {
   }
 
   // click the card with position 'index' in state.cards
-  cardClicked(event, index) {
+  selectCard(event, index) {
     // don't select if disabled
     if (this.state.disabled[index]) return
 
@@ -95,7 +116,7 @@ class Board extends React.Component {
   }
 
   // delete the card with position 'index' in state.cards
-  cardDeleted(event, index) {
+  deleteCard(event, index) {
     event.stopPropagation()
 
     const cards = this.state.cards.slice()
@@ -110,7 +131,7 @@ class Board extends React.Component {
   }
 
   // called when the add button is clicked
-  addButtonClicked(event) {
+  toggleAddForm(event) {
     this.setState({show_form: ! this.state.show_form})
   }
 
@@ -152,15 +173,6 @@ class Board extends React.Component {
     $(event.target).trigger("reset")
   }
 
-  // render nav bar
-  renderNavBar() {
-    return <NavBar
-      can_export={this.state.cards.length > 0}
-      onExport={e => this.exportCards(e)}
-      onImport={e => this.importCards(e)}
-    />
-  }
-
   // render the card with position 'index' in state.cards
   renderCard(index) {
     return <Card
@@ -168,26 +180,8 @@ class Board extends React.Component {
       card={this.state.cards[index]}
       selected={this.state.selected[index]}
       disabled={this.state.disabled[index]}
-      onClick={e => this.cardClicked(e, index)}
-      onDelete={e => this.cardDeleted(e, index)}
-    />
-  }
-
-  // render the add button
-  renderAddButton() {
-    return <AddButton
-      tooltip={! this.state.show_form}
-      onClick={e => this.addButtonClicked(e)}
-    />
-  }
-
-  // render the add form
-  renderAddForm() {
-    return <AddForm
-      show={this.state.show_form}
-      new_card={this.state.new_card}
-      onChange={e => this.addFormChanged(e)}
-      onSubmit={e => this.addFormSubmitted(e)}
+      onClick={e => this.selectCard(e, index)}
+      onDelete={e => this.deleteCard(e, index)}
     />
   }
 
@@ -197,12 +191,35 @@ class Board extends React.Component {
     for (var i = 0; i < this.state.cards.length; i++) {
         rendered_cards.push(this.renderCard(i))
     }
+
     return (
       <div id="board">
+
+        <NavBar
+          can_export={this.state.cards.length > 0}
+          onMenu={e => this.completeMyDay(e)}
+          onExport={e => this.exportCards(e)}
+          onImport={e => this.importCards(e)}
+        />
+
+        <NavMenu
+          show={this.state.show_menu}
+        />
+
         {rendered_cards}
-        {this.renderNavBar()}
-        {this.renderAddButton()}
-        {this.renderAddForm()}
+
+        <AddButton
+          tooltip={! this.state.show_form}
+          onClick={e => this.toggleAddForm(e)}
+        />
+
+        <AddForm
+          show={this.state.show_form}
+          new_card={this.state.new_card}
+          onChange={e => this.addFormChanged(e)}
+          onSubmit={e => this.addFormSubmitted(e)}
+        />
+
       </div>
     )
   }
@@ -211,5 +228,5 @@ class Board extends React.Component {
 // main
 ReactDOM.render(
   <Board />,
-  document.getElementsByTagName("main")[0]
+  document.getElementById("board")
 )
