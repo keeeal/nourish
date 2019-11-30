@@ -47,9 +47,19 @@ class Board extends React.Component {
   completeMyDay(event) {
     event.preventDefault()
     console.log('complete my day:')
-    for (var i = 0; i < this.state.cards.length; i++) {
-      console.log(this.state.cards[i].name)
+    //for (var i = 0; i < this.state.cards.length; i++) {
+    //  console.log(this.state.cards[i].name)
+    //}
+    // all i want to do is subset cards to find remaining cards
+    var remainingCards =[]
+    for(var i=0; i < this.state.cards.length; i++){
+      if(!this.state.selected[i] && !this.state.disabled[i]{
+        remainingCards.push(cards[i])
+      }
     }
+    // now, we need to estimate efficiencies for each goals
+    
+
   }
 
   // open the nav menu
