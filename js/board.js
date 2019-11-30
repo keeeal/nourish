@@ -55,7 +55,7 @@ class Board extends React.Component {
           relWeight += remainingCards[limit]/totals[limit]
         }
         // push [value, name] to eff.
-        eff.push([remainingCards[goal]/relWeight,remainingCards[name])
+        eff.push([remainingCards[goal]/relWeight,remainingCards[name]])
       }
       // sort eff by value, keeping track of card name
       eff.sort(sortFunction);
@@ -64,7 +64,8 @@ class Board extends React.Component {
       log.console(eff[0])
     }
   }
-  function sortFunction(a, b) {
+
+  sortFunction(a, b) {
       if (a[0] === b[0]) {
           return 0;
       }
